@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Navbar,Nav,Container,Image} from "react-bootstrap";
+import { Navbar, Nav, Container, Image } from "react-bootstrap";
 
 import logo from './imgs/logo.png'
 
@@ -10,9 +10,11 @@ export default class Header extends Component {
         return (
             <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
                 <Container>
-                    <Navbar.Brand href="/" >
+                    <Navbar.Brand href="/"  >
                         <Image src={logo} width='45px' style={{ margin: '0px 10px' }} />
-                        GoodDay Hotel
+                        <span style={{position:'relative',top:'3px'}}>
+                            GoodDay Hotel
+                        </span>
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">

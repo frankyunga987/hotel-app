@@ -2,6 +2,7 @@ import { React, useState, useEffect } from 'react'
 
 import { subDays, eachDayOfInterval } from 'date-fns';
 
+import './Total.css'
 
 export default function Total(props) {
     const [startDate, setStartDate] = useState(props.startDate)
@@ -69,23 +70,23 @@ export default function Total(props) {
     }, [props, startDate, endDate,total])
 
     return (
-        <div>
+        <div className='total-div'>
             <ul>
                 <li>
-                    <span >
+                    <span>
                         Weekday ${normalDayPrice} x {totalNormalNights} night(s)
                     </span>
-                    <span >NT${normalDayPrice * totalNormalNights}</span>
+                    <span style={{marginLeft:'10px'}}>NT${normalDayPrice * totalNormalNights}</span>
                 </li>
                 <li>
                     <span>
                         Weekend ${holidayPrice} x {totalHolidayNights} night(s)
                     </span>
-                    <span >NT${holidayPrice * totalHolidayNights}</span>
+                    <span style={{marginLeft:'10px'}} >NT${holidayPrice * totalHolidayNights}</span>
                 </li>
                 <li>
                     <span>Total</span>
-                    <span>NT${total}</span>
+                    <span style={{marginLeft:'10px'}}>NT${total}</span>
                 </li>
             </ul>
         </div>

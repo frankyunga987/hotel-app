@@ -1,5 +1,5 @@
 import { React, useState, useEffect, useCallback } from 'react'
-import { Button, Modal, Form } from 'react-bootstrap'
+import { Button, Modal, Form, Alert } from 'react-bootstrap'
 
 import DatePicker from 'react-datepicker';
 import { addDays, eachDayOfInterval, format, parseISO } from 'date-fns';
@@ -93,14 +93,15 @@ export default function BookingModal(props) {
 
         try {
 
-
           await apiPostBookingData(roomID, formData);
-          console.log('success')
-
-
+          console.log('success');
+          alert('你的訂房資料已成功送出');
+          
         } catch (e) {
 
           console.error(`🚫 Something went wrong posting data: ${e.response.data.message}`);
+          alert(`你的訂房資料出錯了:${e.response.data.message}`);
+  
         }
       }
       sendingFormData(roomID, formData)
@@ -108,8 +109,8 @@ export default function BookingModal(props) {
     }, [])
 
   const handleSubmit = (event) => {
-    console.log(validated)
-    console.log(event.currentTarget.checkValidity())
+    // console.log(validated)
+    // console.log(event.currentTarget.checkValidity())
     console.log(formData)
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -117,7 +118,7 @@ export default function BookingModal(props) {
       event.stopPropagation();
     }
     setValidated(true);
-    
+
   };
 
   useEffect(() => {
@@ -190,7 +191,7 @@ export default function BookingModal(props) {
               excludeDates={booking.map(data => parseISO(data.date))}
               placeholderText="Check in"
             />
-            <span>-</span>
+            <span className='datapicker-line'>~</span>
             <DatePicker
               selected={endDate}
               onChange={(date) => setEndDate(date)}

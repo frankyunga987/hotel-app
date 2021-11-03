@@ -17,8 +17,12 @@
 
 .form-price span {
     margin-left: 20px;
+    margin-right: 20px;
+    
 }
 
-.date-picker{
-    display: flex;
+.datapicker-line{
+    /* margin-left: 85px; */
+    font-size: 20px;
+    transform: rotate(90deg);
 }

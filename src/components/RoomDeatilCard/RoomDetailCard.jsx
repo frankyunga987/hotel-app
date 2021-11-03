@@ -209,8 +209,6 @@ export default function RoomDeatilCard(props) {
                         <span style={{ textDecoration: !amenities['Pet-Friendly'] ? 'line-through' : null, display: 'inline-block' }}>
                             <MdPets />Pet&nbsp;Friendly
                         </span>
-
-
                     </Col>
                 </Row>
             </Container>
