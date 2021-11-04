@@ -1,5 +1,6 @@
 import { React, useState, useEffect, useCallback } from 'react'
-import { Button, Modal, Form, Alert } from 'react-bootstrap'
+import { Button, Modal, Form } from 'react-bootstrap'
+
 
 import DatePicker from 'react-datepicker';
 import { addDays, eachDayOfInterval, format, parseISO } from 'date-fns';
@@ -24,7 +25,7 @@ export default function BookingModal(props) {
 
   const [guestName, setGuestName] = useState()
   const [guestTel, setGuestTel] = useState()
-  const [selectDate, setSelectDate] = useState([])
+  const [selectDate, setSelectDate] = useState()
 
   const [formData, setFormData] = useState({
     name: '',
@@ -37,7 +38,7 @@ export default function BookingModal(props) {
     setRoomID(props.roomID)
     setBooking(props.booking)
     console.log(booking)
-    // console.log(roomID)
+    console.log(props)
     console.log(startDate)
     console.log(endDate)
 
@@ -55,10 +56,7 @@ export default function BookingModal(props) {
     setGuestTel(e.target.value)
   }
 
-  // const excludeDates = () => {
 
-  //   booking.map(data => data.date);
-  // };
 
   useEffect(() => {
     if (endDate > startDate) {
@@ -95,13 +93,14 @@ export default function BookingModal(props) {
 
           await apiPostBookingData(roomID, formData);
           console.log('success');
-          alert('你的訂房資料已成功送出');
-          
+
+          alert('訂房成功')
+
         } catch (e) {
 
           console.error(`🚫 Something went wrong posting data: ${e.response.data.message}`);
-          alert(`你的訂房資料出錯了:${e.response.data.message}`);
-  
+
+          alert(e.response.data.message)
         }
       }
       sendingFormData(roomID, formData)
@@ -109,8 +108,7 @@ export default function BookingModal(props) {
     }, [])
 
   const handleSubmit = (event) => {
-    // console.log(validated)
-    // console.log(event.currentTarget.checkValidity())
+
     console.log(formData)
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -118,14 +116,37 @@ export default function BookingModal(props) {
       event.stopPropagation();
     }
     setValidated(true);
+    sendFormData(roomID, formData);
+
+    // setFormData({
+    //   name: '',
+    //   tel: '',
+    //   date: [],
+    // })
 
   };
 
   useEffect(() => {
-    if (validated) {
-      sendFormData(roomID, formData);
+    if (props.show === false) {
+      setFormData({
+        name: '',
+        tel: '',
+        date: [],
+      })
     }
-  }, [validated])
+  }, [props])
+
+  const highlightWithRanges = [
+    {
+      "react-datepicker__day--highlighted-custom-1": [
+        new Date(),
+      ],
+    },
+    {
+      "react-datepicker__day--highlighted-custom-2":
+        booking.map(data => parseISO(data.date)),
+    },
+  ];
 
 
   return (
@@ -178,6 +199,7 @@ export default function BookingModal(props) {
               Please enter a phone number.
             </Form.Control.Feedback>
           </Form.Group>
+
           <div style={{ marginBottom: '8px' }}>
             Date
           </div>
@@ -187,10 +209,14 @@ export default function BookingModal(props) {
               onChange={(date) => setStartDate(date)}
               selectsStart
               startDate={startDate}
-              minDate={new Date()}
+              minDate={addDays(new Date(), 1)}
               excludeDates={booking.map(data => parseISO(data.date))}
               placeholderText="Check in"
-            />
+              highlightDates={highlightWithRanges}
+            >
+              <div style={{ color: "red" }}>紅色日期已被訂房!</div>
+              <div style={{ color: "darkorange" }}>不能選擇當日進行訂房!</div>
+            </DatePicker>
             <span className='datapicker-line'>~</span>
             <DatePicker
               selected={endDate}
@@ -198,10 +224,15 @@ export default function BookingModal(props) {
               selectsEnd
               startDate={startDate}
               endDate={endDate}
-              minDate={addDays(startDate, 1)}
+              minDate={addDays(new Date(), 2)}
               excludeDates={booking.map(data => parseISO(data.date))}
               placeholderText="Check Out"
-            />
+              highlightDates={highlightWithRanges}
+
+            >
+              <div style={{ color: "red" }}>紅色日期已被訂房!</div>
+              <div style={{ color: "darkorange" }}>不能選擇當日進行訂房!</div>
+            </DatePicker>
           </div>
           <Total
             normalDayPrice={roomData.normalDayPrice}
