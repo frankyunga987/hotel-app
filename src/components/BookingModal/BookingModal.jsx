@@ -118,12 +118,6 @@ export default function BookingModal(props) {
     setValidated(true);
     sendFormData(roomID, formData);
 
-    // setFormData({
-    //   name: '',
-    //   tel: '',
-    //   date: [],
-    // })
-
   };
 
   useEffect(() => {
