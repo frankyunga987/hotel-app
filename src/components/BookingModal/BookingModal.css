@@ -22,8 +22,8 @@
 
 }
 
-.datapicker-line {
-    margin-left: 85px;
+.datapicker-arrow {
+    margin-left: 80px;
     font-size: 20px;
     transform: rotate(90deg);
 }

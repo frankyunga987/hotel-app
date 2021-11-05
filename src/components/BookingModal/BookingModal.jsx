@@ -1,7 +1,7 @@
 import { React, useState, useEffect, useCallback } from 'react'
 import { Button, Modal, Form } from 'react-bootstrap'
 
-
+import { FaArrowAltCircleDown } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import { addDays, eachDayOfInterval, format, parseISO } from 'date-fns';
 
@@ -14,10 +14,7 @@ import Total from './Total';
 
 
 
-export default function BookingModal(props) {
-  const [roomData, setRoomData] = useState(props.data)
-  const [roomID, setRoomID] = useState(props.roomID)
-  const [booking, setBooking] = useState(props.booking)
+export default function BookingModal({data:roomData,roomID,booking,show,onHide}) {
   const [validated, setValidated] = useState(false);
 
   const [startDate, setStartDate] = useState();
@@ -34,29 +31,23 @@ export default function BookingModal(props) {
   })
 
   useEffect(() => {
-    setRoomData(props.data)
-    setRoomID(props.roomID)
-    setBooking(props.booking)
     console.log(booking)
-    console.log(props)
     console.log(startDate)
     console.log(endDate)
-
     if (endDate <= startDate) {
       setEndDate(addDays(startDate, 1));
     }
+  }, [ startDate, endDate])
 
-  }, [props, startDate, endDate, booking])
-
-  const setName = e => {
-    setGuestName(e.target.value)
-  }
-
-  const setTel = e => {
-    setGuestTel(e.target.value)
-  }
-
-
+  useEffect(() => {
+    if (show === false) {
+      setFormData({
+        name: '',
+        tel: '',
+        date: [],
+      })
+    }
+  }, [show])
 
   useEffect(() => {
     if (endDate > startDate) {
@@ -71,7 +62,6 @@ export default function BookingModal(props) {
 
   }, [endDate, startDate])
 
-
   useEffect(() => {
 
     setFormData({
@@ -84,11 +74,19 @@ export default function BookingModal(props) {
 
   }, [guestName, guestTel, selectDate])
 
+  const setName = e => {
+    setGuestName(e.target.value)
+  }
+
+  const setTel = e => {
+    setGuestTel(e.target.value)
+  }
+
+
   const sendFormData = useCallback(
     (roomID, formData) => {
       const sendingFormData = async (roomID, formData) => {
-        // createFormData()
-
+        
         try {
 
           await apiPostBookingData(roomID, formData);
@@ -120,16 +118,6 @@ export default function BookingModal(props) {
 
   };
 
-  useEffect(() => {
-    if (props.show === false) {
-      setFormData({
-        name: '',
-        tel: '',
-        date: [],
-      })
-    }
-  }, [props])
-
   const highlightWithRanges = [
     {
       "react-datepicker__day--highlighted-custom-1": [
@@ -145,7 +133,9 @@ export default function BookingModal(props) {
 
   return (
     <Modal
-      {...props}
+      // {...props}
+      show={show}
+      onHide={onHide}
       size="md"
       aria-labelledby="contained-modal-title-vcenter"
       centered
@@ -211,7 +201,9 @@ export default function BookingModal(props) {
               <div style={{ color: "red" }}>紅色日期已被訂房!</div>
               <div style={{ color: "darkorange" }}>不能選擇當日進行訂房!</div>
             </DatePicker>
-            <span className='datapicker-line'>~</span>
+            <span className='datapicker-arrow'>
+              <FaArrowAltCircleDown />
+            </span>
             <DatePicker
               selected={endDate}
               onChange={(date) => setEndDate(date)}
@@ -238,7 +230,7 @@ export default function BookingModal(props) {
       </Modal.Body>
 
       <Modal.Footer>
-        <Button onClick={props.onHide}>Close</Button>
+        <Button onClick={onHide}>Close</Button>
         <Button type="submit" onClick={handleSubmit}>Submit form</Button>
       </Modal.Footer>
     </Modal>
